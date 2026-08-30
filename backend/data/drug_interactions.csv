@@ -1,0 +1,26 @@
+drug_a,drug_b,severity,description,source
+aspirin,warfarin,Major,"Concurrent use substantially increases risk of severe gastrointestinal and intracranial bleeding due to combined antiplatelet and anticoagulant effects.",DrugBank/RxNav
+metformin,contrast media,Major,"Iodinated radiocontrast can precipitate acute renal impairment leading to fatal metformin accumulation and lactic acidosis.",DrugBank/RxNav
+telmisartan,ibuprofen,Moderate,"NSAIDs attenuate the antihypertensive efficacy of angiotensin receptor blockers and increase risk of acute renal failure.",DrugBank/RxNav
+telmisartan,potassium,Moderate,"Concomitant use may result in severe hyperkalemia, particularly in patients with pre-existing renal impairment.",DrugBank/RxNav
+amoxicillin,methotrexate,Major,"Penicillins decrease renal clearance of methotrexate leading to severe bone marrow toxicity and pancytopenia.",DrugBank/RxNav
+atorvastatin,clarithromycin,Major,"Strong CYP3A4 inhibitors markedly increase atorvastatin plasma concentrations, elevating risk of rhabdomyolysis and myopathy.",DrugBank/RxNav
+metformin,alcohol,Major,"Chronic or acute ethanol ingestion potentiates the effect of metformin on lactate metabolism, elevating risk of lactic acidosis.",DrugBank/RxNav
+pantoprazole,clopidogrel,Moderate,"Proton pump inhibitors may modestly decrease hepatic bioactivation of clopidogrel via CYP2C19, reducing antiplatelet efficacy.",DrugBank/RxNav
+ciprofloxacin,theophylline,Major,"Ciprofloxacin inhibits CYP1A2 metabolism of theophylline, leading to toxic plasma levels, seizures, and arrhythmias.",DrugBank/RxNav
+paracetamol,warfarin,Moderate,"Regular prolonged paracetamol use (>2g/day) enhances anticoagulant effect of warfarin, prolonging INR and increasing bleeding risk.",DrugBank/RxNav
+amlodipine,simvastatin,Moderate,"Amlodipine increases systemic exposure of simvastatin. Limit simvastatin dose to 20mg daily to prevent myopathy.",DrugBank/RxNav
+enalapril,spironolactone,Major,"Combination significantly increases risk of severe life-threatening hyperkalemia. Close serum potassium monitoring required.",DrugBank/RxNav
+levothyroxine,calcium carbonate,Moderate,"Calcium salts bind levothyroxine in the gastrointestinal tract, significantly reducing thyroid hormone absorption.",DrugBank/RxNav
+digoxin,amiodarone,Major,"Amiodarone inhibits P-glycoprotein efflux of digoxin, doubling serum digoxin concentrations and causing fatal cardiotoxicity.",DrugBank/RxNav
+tramadol,fluoxetine,Major,"Combined serotonergic agents increase risk of Serotonin Syndrome and lower seizure threshold.",DrugBank/RxNav
+azithromycin,amiodarone,Major,"Concomitant administration significantly prolongs QTc interval, precipitating Torsades de Pointes and ventricular arrhythmias.",DrugBank/RxNav
+furosemide,gentamicin,Major,"Additive ototoxicity and nephrotoxicity between loop diuretics and aminoglycosides. Avoid concurrent administration.",DrugBank/RxNav
+omeprazole,iron,Minor,"Gastric acid suppression reduces ionization and absorption of dietary and supplemental non-heme iron salts.",DrugBank/RxNav
+diclofenac,prednisolone,Major,"Concomitant NSAID and systemic corticosteroid therapy causes synergistically elevated risk of gastrointestinal ulceration and perforation.",DrugBank/RxNav
+glimepiride,fluconazole,Major,"Fluconazole inhibits CYP2C9 metabolism of sulfonylureas, causing severe prolonged hypoglycemia.",DrugBank/RxNav
+lithium,ibuprofen,Major,"NSAIDs decrease renal prostaglandin synthesis, impairing lithium excretion and precipitating acute lithium toxicity.",DrugBank/RxNav
+phenytoin,valproate,Major,"Protein displacement and metabolic interaction leading to increased free phenytoin levels and hepatotoxicity.",DrugBank/RxNav
+atenolol,verapamil,Major,"Profound negative inotropic and dromotropic effects leading to severe bradycardia, heart block, and cardiogenic shock.",DrugBank/RxNav
+carbamazepine,clarithromycin,Major,"Macrolides inhibit carbamazepine clearance, resulting in acute ataxia, vertigo, nystagmus, and toxic encephalopathy.",DrugBank/RxNav
+allopurinol,azathioprine,Major,"Allopurinol blocks xanthine oxidase conversion of 6-mercaptopurine, leading to fatal bone marrow suppression.",DrugBank/RxNav

@@ -1,0 +1,32 @@
+{
+  "active_provider": "bhashini",
+  "default_language": "hi",
+  "supported_languages": ["hi", "en", "ta", "bn", "mr"],
+  "bhashini": {
+    "user_id": "ULCA_USER_ID_AIIA_HOSPITAL",
+    "api_key": "ULCA_API_KEY_AIIA_DEV",
+    "pipeline_id": "ai4bharat-indic-speech-pipeline-v1",
+    "inference_url": "https://dhruva-api.bhashini.gov.in/services/inference/pipeline"
+  },
+  "offline": {
+    "models_dir": "/opt/medikiosk/models",
+    "vosk_model_paths": {
+      "hi": "/opt/medikiosk/models/vosk-model-hi-0.22",
+      "en": "/opt/medikiosk/models/vosk-model-en-in-0.5",
+      "ta": "/opt/medikiosk/models/vosk-model-ta-0.11"
+    }
+  },
+  "audio_preprocessing": {
+    "sample_rate_hz": 16000,
+    "channels": 1,
+    "bit_depth": 16,
+    "noise_suppression_enabled": true,
+    "silence_cutoff_seconds": 5.0,
+    "max_turn_duration_seconds": 45.0
+  },
+  "tts_voice_preferences": {
+    "gender": "female",
+    "speaking_rate": 1.0,
+    "output_format": "wav"
+  }
+}

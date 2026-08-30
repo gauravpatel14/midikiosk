@@ -1,0 +1,66 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+**/*.pyc
+**/__pycache__/
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+
+# Configuration & Secrets
+.env
+.env.*
+*.env
+.env.local
+!.env.example
+
+# Testing & Coverage
+.pytest_cache/
+**/.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Type Checking & IDE Caches
+.mypy_cache/
+.pytype/
+.pyre/
+.pyrefly_virtual/
+.vscode/
+.idea/
+*.swp
+*~
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs & Temporary Files
+*.log
+*.tmp
+*.bak
+/tmp/medikiosk_*
+
+# Agent & Local IDE Artifacts
+.codex/
+.agents/
+skills-lock.json
+AGENTS.md
+agent.md
+GEMINI.md
+gemini.md
+DESIGN.md
+design.md
+
+

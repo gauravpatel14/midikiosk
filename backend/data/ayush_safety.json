@@ -1,0 +1,90 @@
+{
+  "pharmacopoeia": "Ayurvedic Pharmacopoeia of India (API) & WHO Herbal Guidelines",
+  "permissible_limits_ppm": {
+    "lead_pb": {
+      "limit_ppm": 10.0,
+      "standard": "API Part-I / WHO Guidelines for Quality Control of Herbal Medicines",
+      "toxicity_effects": "Encephalopathy, peripheral neuropathy, microcytic anemia, nephrotoxicity"
+    },
+    "arsenic_as": {
+      "limit_ppm": 3.0,
+      "standard": "API Part-I / WHO Guidelines for Quality Control of Herbal Medicines",
+      "toxicity_effects": "Skin hyperpigmentation, keratosis, peripheral vascular disease, hepatotoxicity"
+    },
+    "cadmium_cd": {
+      "limit_ppm": 0.3,
+      "standard": "API Part-I / WHO Guidelines for Quality Control of Herbal Medicines",
+      "toxicity_effects": "Renal tubular dysfunction, osteomalacia (Itai-itai disease), pulmonary damage"
+    },
+    "mercury_hg": {
+      "limit_ppm": 1.0,
+      "standard": "API Part-I / WHO Guidelines for Quality Control of Herbal Medicines",
+      "toxicity_effects": "Acrodynia, tremors, erethism, nephrotic syndrome, acute tubular necrosis"
+    }
+  },
+  "rasa_shastra_formulations": [
+    {
+      "name": "Arogyavardhini Vati",
+      "aliases": ["arogyavardhini", "arogyavardhini bati", "arogyavardhini rasa"],
+      "herbo_mineral_elements": ["Shuddha Parada (Purified Mercury)", "Shuddha Gandhaka (Purified Sulphur)", "Lauha Bhasma (Iron Calx)", "Abhraka Bhasma (Mica Calx)", "Tamra Bhasma (Copper Calx)"],
+      "toxicity_alert": "Contains processed heavy metal bhasmas (Tamra, Parada). Exceeds raw metal limits; therapeutic use requires strictly purified Bhasma adhering to API standards.",
+      "contraindications": ["Chronic Kidney Disease (CKD stage 3-5)", "Pregnancy and lactation", "Nephrotic syndrome", "Severe liver failure"],
+      "max_duration_days": 45,
+      "regulatory_status": "Schedule E(1) of Drugs and Cosmetics Rules 1945 - Requires Medical Supervision"
+    },
+    {
+      "name": "Rasa Sindura",
+      "aliases": ["rasa sindoor", "rasasindura", "rasasindooram"],
+      "herbo_mineral_elements": ["Shuddha Parada (Red Mercury Sulphide)"],
+      "toxicity_alert": "Classical Kupipakwa Rasayana containing mercuric sulphide (HgS). Chronic non-standard intake causes cumulative mercury deposition.",
+      "contraindications": ["Renal insufficiency", "Pediatric patients under 12", "Pregnancy", "Peptic ulcer disease"],
+      "max_duration_days": 30,
+      "regulatory_status": "Schedule E(1) Poisonous Substances in Ayurvedic System"
+    },
+    {
+      "name": "Makaradhwaja",
+      "aliases": ["makardhwaj", "makaradhwaj", "siddha makaradhwaja"],
+      "herbo_mineral_elements": ["Shuddha Swarna (Gold)", "Shuddha Parada (Mercury)", "Shuddha Gandhaka (Sulphur)"],
+      "toxicity_alert": "Gold and mercury based Kupipakwa preparation. Must be administered with specific Anupana (honey, betel leaf) strictly under Vaidya supervision.",
+      "contraindications": ["Hypertensive crisis", "Acute nephritis", "Pregnancy"],
+      "max_duration_days": 30,
+      "regulatory_status": "Schedule E(1) of Drugs and Cosmetics Rules 1945"
+    },
+    {
+      "name": "Kajjali",
+      "aliases": ["kajjali rasa", "kajjalika"],
+      "herbo_mineral_elements": ["Equal parts Shuddha Parada (Mercury) and Shuddha Gandhaka (Sulphur)"],
+      "toxicity_alert": "Black sulphide of mercury. Fundamental base for mercurial formulations. Must show negative free mercury test (Nishchandratva).",
+      "contraindications": ["Renal impairment", "Children", "Pregnancy"],
+      "max_duration_days": 21,
+      "regulatory_status": "Schedule E(1) of Drugs and Cosmetics Rules 1945"
+    },
+    {
+      "name": "Vasant Kusumakar Rasa",
+      "aliases": ["basant kusumakar", "vasanta kusumakara rasa"],
+      "herbo_mineral_elements": ["Swarna Bhasma (Gold)", "Roupya Bhasma (Silver)", "Vanga Bhasma (Tin)", "Naga Bhasma (Lead Calx)", "Kanta Lauha Bhasma (Magnetic Iron)"],
+      "toxicity_alert": "Contains Naga Bhasma (Lead) and Vanga Bhasma (Tin). Must meet Bhasma Pariksha tests (Rekhapurnatva, Varitara) to ensure zero free lead ions.",
+      "contraindications": ["Advanced renal failure", "Severe hepatic impairment"],
+      "max_duration_days": 60,
+      "regulatory_status": "Schedule E(1) - Prescription Only Ayurvedic Medicine"
+    },
+    {
+      "name": "Ekangaveera Rasa",
+      "aliases": ["ekangveer ras", "ekangaveera"],
+      "herbo_mineral_elements": ["Shuddha Parada", "Shuddha Gandhaka", "Kanta Lauha Bhasma", "Vanga Bhasma", "Naga Bhasma", "Tamra Bhasma", "Abhraka Bhasma", "Tikshna Lauha Bhasma"],
+      "toxicity_alert": "Complex herbo-mineral formulation containing lead, copper, tin, and mercury calces. Indicated for neuromuscular conditions.",
+      "contraindications": ["Renal disease", "Pregnancy", "Lactation"],
+      "max_duration_days": 30,
+      "regulatory_status": "Schedule E(1) - Strictly Under Clinical Supervision"
+    },
+    {
+      "name": "Tribhuvankirti Rasa",
+      "aliases": ["tribhuvan kirti ras", "tribhuvankirti"],
+      "herbo_mineral_elements": ["Shuddha Hingula (Cinnabar/Mercury ore)", "Shuddha Vatsanabha (Aconitum ferox/Monkshood)"],
+      "toxicity_alert": "Contains Aconite (Vatsanabha) and Cinnabar. High cardiac toxicity risk if Vatsanabha Shodhana (purification in cow milk/gomutra) is substandard.",
+      "contraindications": ["Cardiac arrhythmias", "Severe hypotension", "Pregnancy", "Active cardiac failure"],
+      "max_duration_days": 7,
+      "regulatory_status": "Schedule E(1) Toxic Plant & Mineral Formulation"
+    }
+  ]
+}

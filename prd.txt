@@ -1,0 +1,488 @@
+# Product Requirements Document (PRD)
+
+## MediKiosk: AI-Powered Clinical History Software Platform
+
+| **Document Version** | 1.0 |
+|----------------------|-----|
+| **Date**             | 2026-08-26 |
+| **Owner**            | Product Management, Ministry of Ayush – All India Institute of Ayurveda |
+| **Status**           | Draft for Review |
+| **Classification**   | Confidential |
+
+---
+
+## 1. Executive Summary
+
+MediKiosk is a patient-facing, AI-powered software platform designed to alleviate the clinical history-taking bottleneck in India’s high-volume government hospitals and AYUSH institutions. The system enables patients to independently provide a comprehensive medical history through a conversational voice interface and guided touchscreen, digitize their existing physical medical documents, and generate a structured, physician-ready summary before entering the consultation room. The platform integrates with the Ayushman Bharat Digital Mission (ABDM) ecosystem and the hospital’s HIS/EMR, ensuring seamless data flow and patient privacy.
+
+The core value proposition is **time reclamation for clinicians** and **inclusive, high-quality history capture for patients**, regardless of literacy or language. The system is designed for deployment as a self-service kiosk in OPD waiting areas, with potential future expansion to mobile and web.
+
+---
+
+## 2. Problem Statement
+
+Indian public hospital OPDs see 4,000–10,000 patients daily, resulting in doctor-patient consultation times of 2–5 minutes. In this window, physicians must elicit a complete history, examine the patient, review prior records, formulate a diagnosis, and prescribe—leading to under-elicitation of history, missed comorbidities, and diagnostic errors. AYUSH practitioners face additional complexity, requiring extensive assessments like *Dashavidha Pariksha* that are impossible to complete manually within current time constraints.
+
+Existing solutions (registration systems, mobile apps, manual triage, simple scanners) fail to capture structured clinical history or process medical documents effectively for the diverse, low-literacy patient population. There is no first-mile mechanism to digitize and structure patient data into the ABDM ecosystem before the clinical encounter.
+
+---
+
+## 3. Goals and Objectives
+
+### 3.1 Primary Goals
+1. **Reduce physician time spent on history elicitation** by at least 60% per patient.
+2. **Improve completeness and accuracy** of recorded medical history (target: >90% coverage of required fields for allopathic mode and >80% for AYUSH *Dashavidha Pariksha*).
+3. **Enable seamless digitization and structuring** of prior medical documents, with >95% OCR accuracy for printed text and >85% for legible handwriting.
+4. **Ensure universal accessibility** for patients with low literacy, elderly, and non-tech-savvy users through voice and touch multimodal interaction.
+5. **Achieve full compliance** with DPDP Act 2023 and ABDM consent framework.
+
+### 3.2 Secondary Goals
+- Reduce diagnostic errors by providing complete history to clinicians.
+- Improve patient satisfaction by reducing perceived wait time and ensuring their story is heard.
+- Create a digital data repository for longitudinal patient records.
+- Enable red-flag detection for emergency cases to improve triage efficiency.
+
+---
+
+## 4. User Personas
+
+| Persona | Description | Key Needs | Pain Points |
+|---------|-------------|-----------|-------------|
+| **Patient (Primary User)** | Rural/semi-urban, varied literacy, speaks regional language, may be elderly, first-time hospital visitor. | Understand and use the system with zero training; communicate in own language; trust privacy; complete task quickly. | Fear of technology, inability to read, difficulty speaking clearly, no prior digital identity. |
+| **Triage Nurse / Kiosk Assistant** | Staff member stationed near kiosks to assist when needed. | Minimal assistance; quick troubleshooting; monitor red-flag alerts. | Overwhelmed by patient volume; limited technical training. |
+| **Physician (Allopathic or AYUSH)** | Busy OPD doctor; expects concise, reliable, structured history. | Read summary in <30 seconds; trust data; ability to edit/confirm; access to original documents if needed. | Information overload, irrelevant details, inaccurate patient statements. |
+| **Hospital Administrator** | Manages OPD flow, IT infrastructure, compliance. | High throughput, minimal downtime, data security, integration with HIS and ABDM. | Legacy systems, budget constraints, training staff. |
+| **AYUSH Practitioner** | Specialized in Ayurveda, needs *Prakriti*, *Vikriti*, *Agni*, etc. | Detailed AYUSH-specific history fields; intuitive presentation. | Existing allopathic forms ignore AYUSH parameters; time constraints. |
+
+---
+
+## 5. Scope
+
+### 5.1 In Scope
+- Self-service kiosk hardware and software (touchscreen, microphone, speaker, document scanner).
+- Multilingual voice and touch-based conversational AI for medical history.
+- Adaptive questioning based on chief complaint and systems review.
+- Allopathic and AYUSH (*Dashavidha Pariksha*) history modes.
+- Document scanning, OCR, entity extraction, chronological ordering, abnormal value flagging.
+- Generation of structured clinical summary in standard format.
+- Integration with ABHA ID, ABDM consent framework, and FHIR APIs.
+- Hospital HIS/EMR integration for pushing summaries.
+- Red-flag detection and immediate triage alert.
+- Audio-guided consent and privacy management.
+- Offline capability for core history collection (with sync when connectivity returns).
+
+### 5.2 Out of Scope
+- Autonomous diagnosis or treatment recommendation.
+- Prescription generation.
+- Telemedicine or remote consultation.
+- Payment processing (unless integrated separately).
+- Mobile application for patient use (future phase).
+- Full AYUSH diagnostic interpretation beyond history parameters.
+- Integration with non-ABDM electronic health records (unless via custom APIs).
+
+---
+
+## 6. Functional Requirements
+
+### 6.1 Overall System Flow
+The system shall follow this end-to-end patient journey:
+
+1. **Identify** – Patient approaches kiosk. System detects presence (via proximity sensor) and displays welcome screen in default language (configurable per hospital). Patient can select language. System prompts for ABHA ID via QR scan, Aadhaar number, or manual entry. For new patients, capture demographic details (name, age, gender, contact, address) with minimal text input (voice or touch). Patient grants consent via audio explanation and touch confirmation.
+2. **Converse** – AI initiates structured history interview (see Module A). Patient responds via voice or touch. Adaptive questioning continues until sufficient history captured or patient indicates completion.
+3. **Scan** – System prompts patient to place documents (prescriptions, lab reports, discharge summaries) on scanner. Patient can add multiple documents. System digitizes, extracts, and structures data (see Module B).
+4. **Summarize & Route** – AI generates structured summary, stores it, links to ABHA, and pushes to HIS. System prints or displays a token/reference number for patient.
+5. **Consult** – Physician opens patient record in HIS/EMR, views summary, edits/confirms, and proceeds.
+
+The system shall support **session persistence** if patient interrupts and resumes within a configurable timeout (default 30 minutes). If patient abandons, temporary data is discarded.
+
+### 6.2 Module A: Conversational Multimodal History Engine
+
+#### 6.2.1 Overview
+The engine conducts a structured medical history interview using a dialogue manager constrained by a clinical ontology. It supports voice input (via ASR) and touch input (via on-screen buttons, icons, and text). All prompts are delivered via TTS in the selected language and displayed as text on screen (with optional icon support).
+
+#### 6.2.2 Input Requirements
+- **Patient Input Modes:**
+  - **Voice:** Continuous speech recognition for natural language. Must handle Indian accents and code-mixing (e.g., Hindi + English).
+  - **Touch:** Tap on predefined options (e.g., “Yes/No”, “Pain location diagram”, “Duration: <1 day, 1-3 days, etc.”), selection from lists, and free text (via on-screen keyboard with transliteration).
+- **System Controls:** Patient can pause, repeat, skip, or go back at any time.
+
+#### 6.2.3 Dialogue Flow and Adaptive Questioning
+- The system shall begin with an open-ended question: “Please tell me what problem brought you to the hospital today?” (localized).
+- Based on the chief complaint extracted (using NLP), the system shall ask follow-up questions following standard clinical frameworks:
+  - **Allopathic:** For pain (SOCRATES: Site, Onset, Character, Radiation, Associated symptoms, Timing, Exacerbating/Relieving factors, Severity); for other symptoms, appropriate frameworks (e.g., OLDCARTS). For multiple complaints, prioritize by severity and emergency.
+  - **Review of Systems (ROS):** Systematically ask about major body systems (cardiovascular, respiratory, GI, neuro, etc.) to capture comorbidities.
+- **History Sections:** The system shall cover all essential sections:
+  - Chief complaint(s)
+  - History of Present Illness (HPI)
+  - Past Medical History (including chronic diseases, surgeries, hospitalizations)
+  - Drug History (current medications, including AYUSH remedies)
+  - Allergy History (drug, food, environmental)
+  - Family History (relevant hereditary conditions)
+  - Personal History (diet, sleep, exercise, substance use, occupation)
+  - For female patients: obstetric/gynecological history (if relevant)
+  - Review of Systems
+- **Adaptive Logic:** The system shall use a decision tree / LLM with rules to ask relevant follow-ups only. Example: If patient says “chest pain”, ask SOCRATES; if patient says “fever”, ask about duration, pattern, associated chills, etc.
+- **Termination Condition:** The system shall stop when all required sections are minimally answered, or patient selects “I’m done”, or a configurable maximum question count is reached (default 40 questions).
+
+#### 6.2.4 AYUSH Mode Requirements
+When hospital configures AYUSH mode (or patient selects Ayurveda department), the system shall extend the history to capture *Dashavidha Pariksha* parameters:
+
+| AYUSH Parameter | Description | Data Type / Input |
+|-----------------|-------------|-------------------|
+| *Prakriti* | Constitutional type (Vata, Pitta, Kapha, combinations) | Multiple choice with descriptions, or inferred from lifestyle questions |
+| *Vikriti* | Current imbalance / disease state | Free text / voice, structured as per chief complaint |
+| *Sara* | Tissue quality assessment | Multiple choice (e.g., Twak Sara, Rakta Sara, etc.) based on patient self-report and simple observations |
+| *Samhanana* | Body build / compactness | Multiple choice (thin, medium, stout) |
+| *Pramana* | Body measurements | Numeric input (height, weight) or visual selection |
+| *Satmya* | Habituation / suitability (diet, climate) | Multiple choice with common Indian dietary patterns |
+| *Sattva* | Mental strength / temperament | Questionnaire with Likert scale |
+| *Ahara Shakti* | Digestive capacity (quantity and quality) | Questions about appetite, digestion, bloating |
+| *Vyayama Shakti* | Exercise capacity | Questions about stamina, fatigue |
+| *Vaya* | Age category (child, youth, middle, old) | Derived from DOB |
+
+The AYUSH mode shall also capture **Ahara-Vihara** (diet and lifestyle habits), **Nidana** (causative factors), and **Samprapti** (pathogenesis) via open-ended and structured questions. The summary shall present these in a dedicated AYUSH section.
+
+#### 6.2.5 Red-Flag Detection
+The system shall include a rule-based emergency detector that monitors patient responses and spoken content. If any of the following conditions are suspected, the system shall:
+- Immediately pause the interview.
+- Display a prominent alert on the kiosk screen and send a notification to triage staff (via dashboard or SMS).
+- Provide the patient with a reassurance message and instruct them to wait for assistance.
+- Mark the patient’s record as **PRIORITY** in the HIS.
+
+**Red-Flag Criteria (non-exhaustive):**
+- Chest pain with dyspnea, diaphoresis, or radiation to jaw/arm.
+- Sudden severe headache, worst ever, with neurological symptoms.
+- Unilateral weakness, facial droop, slurred speech (stroke).
+- Severe abdominal pain with rigidity or vomiting blood.
+- High fever with altered mental status.
+- Suicidal ideation or severe psychiatric distress.
+- Any active bleeding or major trauma.
+- Pregnancy-related emergencies (if applicable).
+
+### 6.3 Module B: Medical Document Digitization & Intelligence
+
+#### 6.3.1 Scanning and Upload
+- The kiosk shall be equipped with a high-speed document scanner (ADF capable) or a camera-based capture system.
+- Patient places documents one by one; system automatically detects and scans.
+- Supported formats: printed paper, handwritten notes, lab reports, discharge summaries, prescriptions (including AYUSH prescriptions with Sanskrit/regional terms).
+- Maximum page size: A4; automatic color/grayscale detection; resolution at least 300 DPI for OCR.
+- The system shall support batch scanning up to 20 pages per session.
+
+#### 6.3.2 OCR and Text Extraction
+- **Printed Text:** High-accuracy OCR (>95% accuracy) for English, Hindi, and major Indian languages (configurable list: Hindi, Marathi, Bengali, Tamil, Telugu, Kannada, Malayalam, Gujarati, Punjabi, etc.).
+- **Handwritten Text:** OCR with >85% accuracy for legible handwriting in English and Hindi. For other languages, fallback to human review queue if confidence < threshold.
+- **Language Detection:** Automatically detect language(s) in each document; support mixed-language documents.
+- **Layout Analysis:** Identify sections (heading, body, tables, headers/footers) to preserve structure.
+
+#### 6.3.3 Clinical Entity Extraction
+Using NLP and medical ontologies (SNOMED CT, LOINC, RxNorm, and AYUSH-specific terminologies), the system shall extract and structure:
+- **Diagnoses:** Include ICD-10 codes where possible; map AYUSH terms.
+- **Medications:** Drug name (generic/brand), dosage, frequency, route, duration. Recognize AYUSH formulations (e.g., Triphala, Ashwagandha).
+- **Investigations:** Lab test name, result value, unit, reference range, date. Flag abnormal values (outside reference range) with visual highlight.
+- **Procedures/Surgeries:** Procedure name, date, body site.
+- **Vital Signs:** If present in documents.
+- **Allergies:** Extract from documented allergy lists.
+
+#### 6.3.4 Chronological Organization
+- The system shall assign a date to each document based on extracted date fields (prescription date, report date, discharge date). If no date found, prompt patient to estimate or assign current date.
+- Documents shall be ordered chronologically in the patient timeline.
+- Extracted entities shall be merged into a unified patient history timeline, resolving duplicates (e.g., same diagnosis mentioned in multiple documents) with source references.
+
+#### 6.3.5 Drug Interaction and Abnormal Value Flagging
+- The system shall run a drug-drug interaction check (using a drug database) on all extracted medications and flag potential interactions (severity level) for physician attention.
+- Abnormal lab values (outside reference range) shall be highlighted in the summary, with the specific value and range.
+- For AYUSH documents, flag any known contraindications (e.g., heavy metal content in some formulations) if data available.
+
+### 6.4 Module C: Structured History Summary Generator
+
+#### 6.4.1 Summary Format
+The system shall generate a physician-ready summary in the following standard structure (configurable per hospital):
+
+**Allopathic Summary:**
+1. **Patient Demographics:** Name, age, sex, ABHA ID, date/time, language used.
+2. **Chief Complaint:** Primary complaint as stated, along with duration.
+3. **History of Present Illness:** Chronological narrative synthesized from conversation, with key positive and negative findings.
+4. **Past Medical History:** Chronic conditions, surgeries, hospitalizations with dates.
+5. **Drug History:** Current medications with dosage, frequency.
+6. **Allergy History:** Known allergies and reactions.
+7. **Family History:** Relevant hereditary diseases.
+8. **Personal History:** Diet, sleep, exercise, substance use (tobacco, alcohol), occupation.
+9. **Review of Systems:** Positive and negative findings by system.
+10. **Prior Investigations Summary:** Table of lab results with abnormal values highlighted, chronological document list.
+11. **Red Flags:** Any emergency symptoms detected.
+
+**AYUSH Summary (in addition to above):**
+- *Prakriti* assessment (with confidence level).
+- *Vikriti* summary.
+- *Agni* and *Koshtha* status.
+- *Dashavidha Pariksha* table.
+- *Ahara-Vihara* details.
+- *Nidana* and *Samprapti* as narrated.
+
+#### 6.4.2 Generation Logic
+- The summary shall be generated by an LLM (e.g., fine-tuned for clinical summarization) using the structured data collected.
+- It must be **concise** (target length: 1-2 pages, maximum 500 words for text sections).
+- Use bullet points and tables where appropriate.
+- The summary shall include a **confidence score** for each section (based on patient response completeness and consistency) to alert physician about uncertain areas.
+- The physician can view the full raw transcript and original document scans by clicking on any summary section.
+
+#### 6.4.3 Editing and Verification
+- The summary is presented to the physician as a **draft** within the HIS/EMR.
+- The physician can edit any field directly, add comments, or reject the summary entirely.
+- Any edits are saved as a new version, and the original AI-generated summary remains for audit.
+- The physician must explicitly **confirm** the summary before it becomes part of the permanent record.
+
+### 6.5 Module D: Consent, Privacy & ABDM Integration
+
+#### 6.5.1 Consent Management
+- **Pre-Interaction Consent:** Before any data collection, the system shall provide an audio explanation (in selected language) of what data will be collected, how it will be used, and who will see it. The patient must provide explicit consent via touch (e.g., "I agree" button) and optionally voice confirmation.
+- **Granular Consent:** Separate consent checkboxes for:
+  - History collection via voice and touch.
+  - Document scanning and OCR.
+  - Sharing with physician and hospital.
+  - Upload to ABHA PHR (Personal Health Record).
+- **Revocable:** Patient can withdraw consent at any time during the session; data collected up to that point will be deleted immediately.
+- **Consent Log:** A tamper-proof log of consent (timestamp, method, version) shall be stored and linked to the patient record.
+- **Low-Literacy Support:** All consent screens must have icons and audio explanations; avoid legal jargon.
+
+#### 6.5.2 ABDM Integration
+- **ABHA ID:** Support ABHA ID lookup via QR code (as per ABDM specifications) or 14-digit number. For new patients, assist in ABHA creation via Aadhaar eKYC if possible (requires Aadhaar OTP).
+- **FHIR API:** The system shall expose FHIR R4-compliant endpoints for:
+  - Patient resource creation/update.
+  - DocumentReference for scanned documents.
+  - Composition for clinical summary (or Observation/QuestionnaireResponse for structured data).
+- **HIP/HIU Integration:** Act as a Health Information Provider (HIP) to push data to ABDM Health Information Exchange. Must obtain Health Facility ID from ABDM.
+- **Data Push:** After summary generation, the system shall automatically push the structured summary and documents to the patient's ABHA PHR (if consent given) and to the hospital HIS via FHIR.
+- **Error Handling:** If ABDM services are unavailable, queue data locally and retry asynchronously with exponential backoff.
+
+#### 6.5.3 Data Security and Privacy
+- All data shall be encrypted in transit (TLS 1.2+) and at rest (AES-256).
+- Voice recordings and raw documents shall be stored temporarily (maximum 24 hours) for quality assurance, then securely deleted.
+- The system shall implement role-based access control: patients can only see their own data; physicians see data only after patient check-in and assignment; administrators have audit logs only.
+- Compliance with DPDP Act 2023: data minimization, purpose limitation, storage limitation, and right to deletion.
+- The system shall support data export and deletion requests as per regulations.
+
+### 6.6 User Interface and Experience Requirements
+
+#### 6.6.1 Kiosk Hardware
+- **Display:** Minimum 15-inch touchscreen, high brightness for outdoor/indoor use, anti-glare.
+- **Audio:** Directional speakers and noise-cancelling microphone array to handle noisy OPD environment.
+- **Scanner:** Integrated ADF scanner or high-resolution camera; automatic document feeder.
+- **Additional:** Proximity sensor, privacy filter, headphone jack (optional for privacy), printer for token/receipt (optional).
+- **Ergonomics:** Height adjustable for wheelchair access; sturdy, hospital-grade.
+
+#### 6.6.2 UI Design Principles
+- **Icon-Driven:** Use large, self-explanatory icons for common actions (e.g., microphone, speaker, “yes/no”, “next”, “help”).
+- **Minimal Text:** Text labels in large font (minimum 18pt) with high contrast. Use symbols where possible.
+- **Audio Prompts:** Every screen must have an audio prompt in the selected language; patient can replay.
+- **Progress Indicator:** Show a simple progress bar (e.g., “Part 2 of 5 completed”).
+- **Error Recovery:** Clear instructions if voice not understood; offer retry, use touch, or call for help.
+- **Language Selection:** Prominent language selection screen with flag icons and native script (e.g., हिंदी, English, தமிழ், বাংলা, etc.). Default language based on hospital location but configurable.
+- **Accessibility:** Support screen reader compatibility, high contrast mode, adjustable volume.
+
+#### 6.6.3 Voice Interaction
+- **ASR Accuracy:** Word error rate < 15% in noisy environment for supported languages.
+- **Wake Word:** Optional “Hey MediKiosk” to start voice input; otherwise, patient taps microphone button.
+- **Barge-in:** Allow patient to interrupt TTS prompts.
+- **Speech Adaptation:** Model should adapt to Indian English accent and regional language dialects (e.g., Hindi with Bhojpuri influence).
+- **Silence Handling:** If silence >5 seconds, prompt for input; after 3 prompts, suggest touch input.
+
+### 6.7 Emergency and Red Flag Handling
+- As described in 6.2.5, but additionally:
+- The system shall notify triage nurse via a dedicated dashboard with patient name, kiosk ID, suspected condition, and timestamp.
+- The kiosk screen shall turn red and display a simple message: “Please wait, a nurse is coming to help you.”
+- The system shall not attempt further history collection if a red flag is triggered.
+- If patient is in distress, the system may automatically call emergency code via hospital intercom (configurable).
+
+---
+
+## 7. Non-Functional Requirements
+
+### 7.1 Performance
+- **Response Time:**
+  - System boot to ready state: < 30 seconds.
+  - Language selection to first history question: < 5 seconds.
+  - ASR transcription latency: < 2 seconds after end of speech.
+  - Document scan and OCR: < 10 seconds per page.
+  - Summary generation: < 15 seconds after all data collected.
+  - Push to HIS: < 5 seconds (assuming network available).
+- **Concurrency:** Each kiosk must support one active session at a time. Backend must support N concurrent kiosks where N is configurable (initial target: 50 kiosks per hospital).
+- **Throughput:** System should handle at least 1 patient session every 8 minutes per kiosk (including history and scanning).
+
+### 7.2 Scalability
+- Backend architecture should be horizontally scalable (containerized microservices) to support multiple hospitals.
+- Database must handle millions of patient records over time.
+- Support multi-tenant deployment with data isolation per hospital.
+
+### 7.3 Availability
+- Kiosk software uptime: 99.5% during OPD hours.
+- Backend services: 99.9% availability.
+- Graceful degradation: If network fails, kiosk should still collect history and store locally; sync when network returns.
+- Scheduled maintenance should not require kiosk downtime.
+
+### 7.4 Security & Privacy
+- End-to-end encryption for all data in transit.
+- Authentication for kiosk to backend using mutual TLS and API keys.
+- All AI processing (ASR, TTS, OCR, LLM) must occur either on-premise or through secure cloud with data residency in India, compliant with DPDP.
+- Audit logs for every access and modification, retained for 7 years.
+- Vulnerability scanning and penetration testing before deployment and periodically.
+
+### 7.5 Usability & Accessibility
+- Task completion rate: >90% of first-time users should complete history without staff assistance.
+- Average session time: < 6 minutes for allopathic, < 10 minutes for AYUSH (excluding document scanning time).
+- User satisfaction: ≥ 4/5 on a simple smiley-scale feedback at end of session.
+- WCAG 2.1 AA compliance for UI.
+
+### 7.6 Language Support
+- **Mandatory Languages:** Hindi, English, and at least 3 state/regional languages per deployment (configurable).
+- **ASR/TTS Models:** Must support all mandatory languages, with ability to add more via plug-in.
+- **UI Localization:** All text, icons, audio prompts localized.
+- **Code-mixing:** ASR and NLP must handle code-mixed input (e.g., “Mujhe chest pain hai”).
+
+### 7.7 Offline and Connectivity
+- Kiosk should function with intermittent connectivity: local cache for patient data, documents, and summary.
+- Sync mechanism with conflict resolution (last write wins with timestamp).
+- ABDM integration may require online connectivity; if offline, queue and sync later.
+
+### 7.8 Maintainability
+- Modular architecture: each module independently deployable.
+- Remote software updates and diagnostics.
+- Central monitoring dashboard for kiosk health, error rates, and model performance.
+- Logging and analytics for continuous improvement (respecting privacy).
+
+---
+
+## 8. Data Requirements
+
+### 8.1 Data Models
+**Patient Demographics**
+- ABHA ID (optional initially)
+- Name, Age, Sex, DOB, Contact, Address
+- Preferred language
+
+**Clinical History Data**
+- Chief Complaints: list of {complaint, duration, severity, details}
+- HPI: structured fields per complaint (SOCRATES, etc.)
+- Past History: list of {condition, onset date, status}
+- Medications: list of {name, dose, frequency, route, duration, source}
+- Allergies: list of {allergen, reaction, severity}
+- Family History: list of {condition, relation}
+- Personal History: diet, sleep, exercise, tobacco, alcohol, occupation
+- Review of Systems: per system {symptom, present, details}
+- AYUSH-specific fields: Prakriti, Vikriti, etc.
+
+**Document Metadata**
+- Document ID, type (prescription/lab/discharge), date, language, OCR text, extracted entities, confidence scores, source file location.
+
+**Structured Summary**
+- Generated summary text (HTML/PDF), version, physician edits, confirmation status, timestamp.
+
+### 8.2 Data Flow Diagram (High-Level)
+```
+Patient → Kiosk UI → ASR/TTS Engine → Dialogue Manager → Structured History Data
+Patient Documents → Scanner → OCR Service → Entity Extraction → Document Data
+History Data + Document Data → Summary Generator (LLM) → Summary → HIS/ABDM
+```
+
+---
+
+## 9. Integration Requirements
+
+### 9.1 ABDM / ABHA
+- **ABHA ID:** Integrate with ABHA APIs for search, create, verify.
+- **Consent Manager:** Implement consent artifacts as per ABDM specifications.
+- **FHIR:** Use FHIR R4 resources: Patient, Encounter, Observation, DiagnosticReport, DocumentReference, Composition.
+- **HIP Registration:** Hospital must be registered as Health Information Provider (HIP) with ABDM Sandbox and Production.
+
+### 9.2 Hospital Information System (HIS/EMR)
+- Use standard HL7 FHIR or RESTful APIs to push summary and documents.
+- Support for major HIS vendors in India (e.g., C-DAC, Tata Health, etc.) via adapters.
+- If HIS does not support FHIR, provide a webhook or HL7 v2 message.
+
+### 9.3 External AI Services
+- **ASR:** Use Bhashini / AI4Bharat models (open-source) or commercial (e.g., Google Speech-to-Text with Indian language support). Must be self-hostable for privacy.
+- **TTS:** Same as ASR.
+- **OCR:** Tesseract with custom models or commercial (e.g., Google Document AI, Azure Form Recognizer) with on-prem option.
+- **LLM:** Use a medically fine-tuned open-source model (e.g., Llama 3, Gemma) or commercial API with HIPAA compliance and data residency in India. Must support structured output and be constrained by clinical ontology.
+
+### 9.4 Emergency Alert System
+- Integration with hospital triage dashboard via WebSocket for real-time alerts.
+- Optional SMS gateway for notifying staff.
+
+---
+
+## 10. Assumptions and Constraints
+
+### 10.1 Assumptions
+- Hospital will provide space, power, and network connectivity for kiosks.
+- Staff (nurses/attendants) will be available to assist patients if needed.
+- Patients will have some form of identification (Aadhaar or ABHA) or be willing to register.
+- Documents are in reasonably legible condition; if not, patient can skip scanning.
+- The hospital has an HIS/EMR system or is willing to adopt a lightweight summary viewer.
+
+### 10.2 Constraints
+- Kiosk hardware cost must be within budget per unit (target < ₹1,00,000).
+- Offline mode cannot provide real-time ABDM sync but can queue.
+- LLM hallucination must be mitigated by using constrained generation and providing confidence scores.
+- The system must not replace clinician judgment; it is an assistive tool.
+
+---
+
+## 11. Success Metrics
+
+| Metric | Target |
+|--------|--------|
+| **Time saved per consultation** | ≥ 60% reduction in history-taking time |
+| **History completeness (allopathic)** | ≥ 90% of essential fields captured |
+| **History completeness (AYUSH)** | ≥ 80% of *Dashavidha Pariksha* fields captured |
+| **Document OCR accuracy (printed)** | ≥ 95% |
+| **Document OCR accuracy (handwritten)** | ≥ 85% for legible writing |
+| **Patient completion rate (first-time users)** | ≥ 90% |
+| **Average session time (allopathic, no scanning)** | ≤ 6 minutes |
+| **Average session time (with 3 documents)** | ≤ 9 minutes |
+| **Red flag detection accuracy** | ≥ 95% sensitivity, ≤ 10% false positive |
+| **Physician satisfaction** | ≥ 4/5 on usability survey |
+| **Patient satisfaction** | ≥ 4/5 on smiley scale |
+| **ABDM data push success rate** | ≥ 98% (when online) |
+
+---
+
+## 12. Risks and Mitigations
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| ASR accuracy poor in noisy environment | High | Use noise-cancelling mics, directional audio, fallback to touch, continuous model improvement with domain data. |
+| Patients not willing to speak to machine | Medium | Provide clear audio guidance, have staff assist, emphasize privacy and time savings. |
+| Document OCR fails on handwritten regional scripts | Medium | Use ensemble OCR models, human review queue for low confidence, allow patient to skip. |
+| LLM generates inaccurate summary | High | Constrain with ontology, use RAG on extracted data, provide confidence scores, physician always reviews. |
+| ABDM integration changes or delays | Medium | Modular integration layer, use sandbox first, fallback to local storage. |
+| Kiosk hardware theft/damage | Low | Secure mounting, tamper alerts, insurance. |
+| Data privacy breach | High | End-to-end encryption, on-prem AI where possible, regular security audits, DPDP compliance. |
+| Digital divide – elderly cannot use | High | Multimodal input, large icons, voice guidance, staff assistance option. |
+
+---
+
+## 13. Appendix
+
+### 13.1 Definitions
+- **ABDM:** Ayushman Bharat Digital Mission
+- **ABHA:** Ayushman Bharat Health Account (unique health ID)
+- **FHIR:** Fast Healthcare Interoperability Resources
+- **HIP:** Health Information Provider
+- **ASR:** Automatic Speech Recognition
+- **TTS:** Text-to-Speech
+- **OCR:** Optical Character Recognition
+- **LLM:** Large Language Model
+- **DPDP:** Digital Personal Data Protection Act
+- **SOCRATES:** Pain assessment mnemonic
+- **Dashavidha Pariksha:** Ten-fold examination in Ayurveda
+
+### 13.2 References
+- Problem Statement Document (provided).
+- ABDM FHIR Implementation Guide.
+- Bhashini / AI4Bharat documentation.
+- SNOMED CT, LOINC, RxNorm.
+
+---
+
+*This PRD is intended to guide the development of MediKiosk. It is a living document and will be updated as requirements evolve.*

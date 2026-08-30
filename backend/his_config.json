@@ -1,0 +1,21 @@
+{
+  "active_adapter": "mock",
+  "fhir": {
+    "endpoint_url": "https://his.aiia.gov.in/fhir/r4",
+    "auth_type": "bearer",
+    "token": "mock_his_fhir_token_secret"
+  },
+  "hl7v2": {
+    "host": "127.0.0.1",
+    "port": 2575,
+    "encoding": "ER7",
+    "sending_app": "MEDIKIOSK",
+    "sending_facility": "AIIA_OPD",
+    "receiving_app": "HOSPITAL_HIS",
+    "receiving_facility": "CENTRAL_HOSPITAL"
+  },
+  "webhook": {
+    "url": "https://his.aiia.gov.in/api/v1/clinical-records/receive",
+    "secret_key": "medikiosk_his_hmac_secret"
+  }
+}
