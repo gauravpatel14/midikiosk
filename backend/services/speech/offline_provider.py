@@ -399,7 +399,47 @@ class OfflineSpeechProvider(BaseSpeechProvider):
         )
 
     def _render_tts(self, text: str, language: str, target: str) -> str:
-        """Blocking TTS render: Piper first, then espeak-ng."""
+        """Render natural human TTS: Edge Neural TTS first, then Piper, espeak-ng, say."""
+        # 1. Ultra-realistic natural human voice via Edge Neural TTS
+        try:
+            import edge_tts
+            voice_map = {
+                "hi": "hi-IN-SwaraNeural",
+                "en": "en-IN-NeerjaNeural",
+                "ta": "ta-IN-PallaviNeural",
+                "te": "te-IN-ShrutiNeural",
+                "bn": "bn-IN-TanishaaNeural",
+                "mr": "mr-IN-AarohiNeural",
+                "gu": "gu-IN-DhwaniNeural",
+            }
+            neural_voice = voice_map.get(
+                language[:2].lower(),
+                "hi-IN-SwaraNeural" if language.lower().startswith("hi") else "en-IN-NeerjaNeural"
+            )
+            temp_mp3 = f"{target}.tmp.mp3"
+
+            async def _render_edge():
+                communicate = edge_tts.Communicate(text[:2000], neural_voice)
+                await communicate.save(temp_mp3)
+
+            asyncio.run(_render_edge())
+            if Path(temp_mp3).exists() and Path(temp_mp3).stat().st_size > 100:
+                ffmpeg = shutil.which("ffmpeg")
+                if ffmpeg:
+                    subprocess.run(
+                        [ffmpeg, "-y", "-i", temp_mp3, "-ar", "16000", "-ac", "1", target],
+                        capture_output=True,
+                        check=False,
+                    )
+                else:
+                    shutil.move(temp_mp3, target)
+                if Path(temp_mp3).exists():
+                    Path(temp_mp3).unlink(missing_ok=True)
+                if Path(target).exists() and Path(target).stat().st_size > 44:
+                    return "edge_neural_tts"
+        except Exception as exc:
+            logger.warning("edge_tts_failed", error=str(exc))
+
         piper_binary = shutil.which(settings.PIPER_BINARY)
         voice_model = self._piper_voice_for(language)
         if piper_binary and voice_model:
@@ -448,6 +488,30 @@ class OfflineSpeechProvider(BaseSpeechProvider):
                 logger.warning("espeak_failed", stderr=result.stderr.decode("utf-8", "ignore")[:200])
             except (subprocess.SubprocessError, OSError) as exc:
                 logger.warning("espeak_error", error=str(exc))
+
+        # macOS native speech synthesizer fallback
+        say_bin = shutil.which("say")
+        if say_bin:
+            try:
+                voice = "Lekha" if language.lower().startswith("hi") else "Samantha"
+                result = subprocess.run(
+                    [
+                        say_bin,
+                        "-v",
+                        voice,
+                        "-o",
+                        target,
+                        "--data-format=LEI16@16000",
+                        text[:2000],
+                    ],
+                    capture_output=True,
+                    timeout=60,
+                    check=False,
+                )
+                if result.returncode == 0 and Path(target).exists() and Path(target).stat().st_size > 44:
+                    return "macos_say"
+            except (subprocess.SubprocessError, OSError) as exc:
+                logger.warning("say_error", error=str(exc))
 
         if settings.ENV in ("test", "testing", "development", "local"):
             from backend.services.speech.audio_utils import generate_mock_wav

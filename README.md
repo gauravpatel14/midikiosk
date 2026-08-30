@@ -115,7 +115,7 @@ graph TD
 - **Runtime Environment**: Python 3.11+ (Certified on Python 3.14.5).
 - **Web Framework**: FastAPI, Starlette, Uvicorn (ASGI async server).
 - **Database Layer**: SQLAlchemy 2.0 (Declarative Mapped Columns, AsyncSession Local, PostgreSQL 16 / SQLite).
-- **Speech Processing**: Bhashini ULCA Pipeline, Vosk offline Kaldi provider, Piper TTS, espeak-ng, pure-python audioop fallbacks.
+- **Speech Processing**: Bhashini ULCA Pipeline, Microsoft Edge Neural TTS (Swara / Neerja), Vosk offline Kaldi provider, Piper ONNX, espeak-ng, macOS native say synthesizer, pure-python audioop fallbacks.
 - **Document Processing**: Tesseract 5.5.3 (Language packs: eng, hin, tam), PyMuPDF (fitz), Pillow, OpenCV.
 - **Clinical Ontologies**: ScispaCy, Med7, ICD-10, LOINC, RxNorm, AYUSH NAMASTE.
 - **Distributed Locking & Scheduling**: Redis, POSIX fcntl kernel locks, APScheduler 3.11+.
@@ -261,6 +261,19 @@ Clinical Questioning Standards:
 - **SOCRATES Framework**: Fully characterizes pain symptoms by Site, Onset, Character, Radiation, Associations, Timing, Exacerbating factors, and Severity (1 to 10 scale).
 - **Review of Systems (ROS)**: Systematically screens cardiovascular, respiratory, gastrointestinal, and neurological systems.
 - **Ayurvedic Dashavidha Pariksha**: Assesses Prakriti (body constitution), Vikriti (imbalance), Sara (tissue quality), Samhanana (body build), Agni (digestive fire), and Koshtha (bowel habits).
+
+Speech Recognition (ASR) & Natural Neural Synthesis (TTS):
+- **Studio-Quality Neural Voices**: Integrated Microsoft Neural TTS delivering natural human cadence, tone, and breath pauses:
+  - Hindi: `hi-IN-SwaraNeural` (natural Indian female healthcare assistant).
+  - English: `en-IN-NeerjaNeural` (natural Indian-accented clinical voice).
+  - Regional Languages: Tamil (`ta-IN-PallaviNeural`), Telugu (`te-IN-ShrutiNeural`), Bengali (`bn-IN-TanishaaNeural`), Marathi (`mr-IN-AarohiNeural`), Gujarati (`gu-IN-DhwaniNeural`).
+- **5-Tier Zero-Downtime Fallback Cascade**:
+  1. Bhashini ULCA Speech Gateway (Government of India online models)
+  2. Edge Neural TTS (Natural human voice synthesis)
+  3. Piper ONNX Neural Voice Engine (Local deep learning models)
+  4. espeak-ng Synthesizer (Ultra-lightweight Linux formant synthesis)
+  5. macOS Native Synthesizer (`/usr/bin/say`) with Lekha / Samantha voices
+- **Automatic Audio Normalization**: Converts all speech output to standard 16kHz 16-bit mono PCM WAV via ffmpeg.
 
 ---
 

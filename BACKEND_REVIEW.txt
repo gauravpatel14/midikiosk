@@ -599,10 +599,22 @@ AYUSH Clinical Safety Standards  - Ayurvedic Pharmacopoeia of India (API) Part I
 
 Air-Gap Network Resilience       - Fully operational in offline hospital mode:
                                    * Offline ASR via Kaldi/Vosk.
-                                   * Offline TTS via Piper / espeak-ng.
+                                   * Offline TTS via Piper / espeak-ng / macOS say.
                                    * Offline OCR via Tesseract 5.5.
                                    * Offline drug interactions via local CSV.
                                    * Offline clinical NER via rule dictionaries.
                                    * Local SQLite / Postgres data persistence.
+
+Human-Like Neural Voice Upgrades    - Integrated Microsoft Neural TTS (hi-IN-SwaraNeural,
+                                      en-IN-NeerjaNeural, ta-IN-PallaviNeural).
+                                    - Studio-quality natural human vocalization with
+                                      realistic Indian cadence and breathing pauses.
+                                    - Zero-downtime 5-tier fallback cascade:
+                                      1. Bhashini ULCA Speech Pipeline (Online)
+                                      2. Edge Neural TTS (Natural Studio Quality)
+                                      3. Piper ONNX Neural Voice Models
+                                      4. espeak-ng Formant Synthesizer
+                                      5. macOS Native Speech Synthesizer ('say' binary)
+                                    - Automatic 16kHz mono PCM WAV conversion via ffmpeg.
 ===============================================================================
 [END OF COMPREHENSIVE REVIEW DOCUMENTATION]
